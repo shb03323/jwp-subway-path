@@ -6,7 +6,7 @@ import javax.validation.constraints.NotNull;
 
 public class StationUnregisterInLineRequest {
 
-    @NotNull(message = "stationName 이 null 입니다.")
+    @NotNull(message = "stationId 가 null 입니다.")
     private final Long stationId;
 
     @JsonCreator
