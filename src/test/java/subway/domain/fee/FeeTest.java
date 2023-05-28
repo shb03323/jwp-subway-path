@@ -10,6 +10,16 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class FeeTest {
 
     @Test
+    @DisplayName("첫 요금은 0원 이다.")
+    void initial_amount_is_zero() {
+        // given, when
+        final Fee fee = Fee.getInitialFee();
+
+        // then
+        assertThat(fee.getAmount()).isZero();
+    }
+
+    @Test
     @DisplayName("덧셈 테스트")
     void add_test() {
         // given

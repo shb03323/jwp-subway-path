@@ -49,4 +49,18 @@ class NormalFeeCalculatorTest {
         // then
         assertThat(fee.getAmount()).isEqualTo(2150);
     }
+
+    @Test
+    @DisplayName("66km는 2250원이다.")
+    void over_50km_2() {
+        // given
+        final FeeCalculator feeCalculator = new NormalFeeCalculator();
+        final Distance distance = new Distance(66);
+
+        // when
+        final Fee fee = feeCalculator.calculate(distance);
+
+        // then
+        assertThat(fee.getAmount()).isEqualTo(2250);
+    }
 }
