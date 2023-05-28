@@ -2,11 +2,11 @@ package subway.controller;
 
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import subway.controller.dto.response.ExceptionResponse;
 import subway.exception.DuplicatedLineNameException;
 import subway.exception.DuplicatedSectionException;
@@ -49,17 +49,6 @@ public class GlobalExceptionHandler {
         return new ExceptionResponse(e.getMessage());
     }
 
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ExceptionResponse handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
-        try {
-            final String errorMessage = Objects.requireNonNull(e.getRootCause()).getMessage();
-            return new ExceptionResponse(errorMessage);
-        } catch (NullPointerException ex) {
-            return handleRuntimeException();
-        }
-    }
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ExceptionResponse handleMethodArgumentNotValid(MethodArgumentNotValidException e) {
@@ -67,6 +56,17 @@ public class GlobalExceptionHandler {
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.joining(" "));
         return new ExceptionResponse(errorMessage);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ExceptionResponse handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException e) {
+        try {
+            final String errorMessage = Objects.requireNonNull(e.getRootCause()).getMessage();
+            return new ExceptionResponse(errorMessage);
+        } catch (NullPointerException ex) {
+            return handleRuntimeException();
+        }
     }
 
     @ExceptionHandler(RuntimeException.class)

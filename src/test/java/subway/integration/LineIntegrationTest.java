@@ -1,5 +1,6 @@
 package subway.integration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
@@ -172,14 +173,15 @@ public class LineIntegrationTest extends IntegrationTest {
         void upper_mid() {
             // given
             final long lineId = 1L;
-            final StationRegisterInLineRequest request = new StationRegisterInLineRequest(SubwayDirection.UP, 1L, 4L, 1);
+            final SubwayDirection direction = SubwayDirection.UP;
+            final StationRegisterInLineRequest request = new StationRegisterInLineRequest(1L, 4L, 1);
 
             // when
             final ExtractableResponse<Response> response = RestAssured
                     .given()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .body(request)
-                    .when().patch("/lines/{id}/register", lineId)
+                    .when().patch("/lines/{id}/register/{direction}", lineId, direction)
                     .then()
                     .extract();
 
@@ -203,14 +205,15 @@ public class LineIntegrationTest extends IntegrationTest {
         void upper_end() {
             // given
             final long lineId = 1L;
-            final StationRegisterInLineRequest request = new StationRegisterInLineRequest(SubwayDirection.UP, 3L, 4L, 1);
+            final SubwayDirection direction = SubwayDirection.UP;
+            final StationRegisterInLineRequest request = new StationRegisterInLineRequest(3L, 4L, 1);
 
             // when
             final ExtractableResponse<Response> response = RestAssured
                     .given()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .body(request)
-                    .when().patch("/lines/{id}/register", lineId)
+                    .when().patch("/lines/{id}/register/{direction}", lineId, direction)
                     .then()
                     .extract();
 
@@ -234,14 +237,15 @@ public class LineIntegrationTest extends IntegrationTest {
         void down_mid() {
             // given
             final long lineId = 1L;
-            final StationRegisterInLineRequest request = new StationRegisterInLineRequest(SubwayDirection.DOWN, 3L, 4L, 1);
+            final SubwayDirection direction = SubwayDirection.DOWN;
+            final StationRegisterInLineRequest request = new StationRegisterInLineRequest(3L, 4L, 1);
 
             // when
             final ExtractableResponse<Response> response = RestAssured
                     .given()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .body(request)
-                    .when().patch("/lines/{id}/register", lineId)
+                    .when().patch("/lines/{id}/register/{direction}", lineId, direction)
                     .then()
                     .extract();
 
@@ -265,14 +269,15 @@ public class LineIntegrationTest extends IntegrationTest {
         void down_end() {
             // given
             final long lineId = 1L;
-            final StationRegisterInLineRequest request = new StationRegisterInLineRequest(SubwayDirection.DOWN, 1L, 4L, 1);
+            final SubwayDirection direction = SubwayDirection.DOWN;
+            final StationRegisterInLineRequest request = new StationRegisterInLineRequest(1L, 4L, 1);
 
             // when
             final ExtractableResponse<Response> response = RestAssured
                     .given()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .body(request)
-                    .when().patch("/lines/{id}/register", lineId)
+                    .when().patch("/lines/{id}/register/{direction}", lineId, direction)
                     .then()
                     .extract();
 
@@ -296,14 +301,15 @@ public class LineIntegrationTest extends IntegrationTest {
         void invalid_line_id() {
             // given
             final long lineId = 4321L;
-            final StationRegisterInLineRequest request = new StationRegisterInLineRequest(SubwayDirection.UP, 1L, 4L, 1);
+            final SubwayDirection direction = SubwayDirection.UP;
+            final StationRegisterInLineRequest request = new StationRegisterInLineRequest(1L, 4L, 1);
 
             // when, then
             RestAssured
                     .given()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .body(request)
-                    .when().patch("/lines/{id}/register", lineId)
+                    .when().patch("/lines/{id}/register/{direction}", lineId, direction)
                     .then()
                     .statusCode(HttpStatus.NOT_FOUND.value());
         }
@@ -313,14 +319,15 @@ public class LineIntegrationTest extends IntegrationTest {
         void station_not_found() {
             // given
             final long lineId = 1L;
-            final StationRegisterInLineRequest request = new StationRegisterInLineRequest(SubwayDirection.UP, 1L, 11L, 1);
+            final SubwayDirection direction = SubwayDirection.UP;
+            final StationRegisterInLineRequest request = new StationRegisterInLineRequest(1L, 11L, 1);
 
             // when, then
             RestAssured
                     .given()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .body(request)
-                    .when().patch("/lines/{id}/register", lineId)
+                    .when().patch("/lines/{id}/register/{direction}", lineId, direction)
                     .then()
                     .statusCode(HttpStatus.NOT_FOUND.value());
         }
@@ -330,14 +337,15 @@ public class LineIntegrationTest extends IntegrationTest {
         void station_already_exist() {
             // given
             final long lineId = 1L;
-            final StationRegisterInLineRequest request = new StationRegisterInLineRequest(SubwayDirection.UP, 1L, 3L, 1);
+            final SubwayDirection direction = SubwayDirection.UP;
+            final StationRegisterInLineRequest request = new StationRegisterInLineRequest(1L, 3L, 1);
 
             // when, then
             RestAssured
                     .given()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .body(request)
-                    .when().patch("/lines/{id}/register", lineId)
+                    .when().patch("/lines/{id}/register/{direction}", lineId, direction)
                     .then()
                     .statusCode(HttpStatus.BAD_REQUEST.value());
         }
@@ -347,32 +355,37 @@ public class LineIntegrationTest extends IntegrationTest {
         void over_distance() {
             // given
             final long lineId = 1L;
-            final StationRegisterInLineRequest request = new StationRegisterInLineRequest(SubwayDirection.UP, 1L, 4L, 111);
+            final SubwayDirection direction = SubwayDirection.UP;
+            final StationRegisterInLineRequest request = new StationRegisterInLineRequest(1L, 4L, 111);
 
             // when, then
             RestAssured
                     .given()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .body(request)
-                    .when().patch("/lines/{id}/register", lineId)
+                    .when().patch("/lines/{id}/register/{direction}", lineId, direction)
                     .then()
                     .statusCode(HttpStatus.BAD_REQUEST.value());
         }
 
         @Test
-        @DisplayName("노선 방향이 null 인 경우")
-        void subway_direction_is_null() {
+        @DisplayName("노선 방향이 잘못된 경우")
+        void subway_direction_is_bad() {
             // given
             final long lineId = 1L;
-            final StationRegisterInLineRequest request = new StationRegisterInLineRequest(null, 1L, 4L, 1);
+            final String request = "{\n" +
+                    "    \"standardStationId\": 1,\n" +
+                    "    \"newStationId\": 3,\n" +
+                    "    \"distance\": 1\n" +
+                    "}";
 
             // when, then
             RestAssured
                     .given()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .body(request)
-                    .when().patch("/lines/{id}/register", lineId)
-                    .then()
+                    .when().patch("/lines/{id}/register/{direction}", lineId, "ups")
+                    .then().log().all()
                     .statusCode(HttpStatus.BAD_REQUEST.value());
         }
 
@@ -381,14 +394,15 @@ public class LineIntegrationTest extends IntegrationTest {
         void standard_station_is_null() {
             // given
             final long lineId = 1L;
-            final StationRegisterInLineRequest request = new StationRegisterInLineRequest(SubwayDirection.UP, null, 4L, 1);
+            final SubwayDirection direction = SubwayDirection.UP;
+            final StationRegisterInLineRequest request = new StationRegisterInLineRequest(null, 4L, 1);
 
             // when, then
             RestAssured
                     .given()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .body(request)
-                    .when().patch("/lines/{id}/register", lineId)
+                    .when().patch("/lines/{id}/register/{direction}", lineId, direction)
                     .then()
                     .statusCode(HttpStatus.BAD_REQUEST.value());
         }
@@ -398,14 +412,15 @@ public class LineIntegrationTest extends IntegrationTest {
         void new_station_is_null() {
             // given
             final long lineId = 1L;
-            final StationRegisterInLineRequest request = new StationRegisterInLineRequest(SubwayDirection.UP, 1L, null, 1);
+            final SubwayDirection direction = SubwayDirection.UP;
+            final StationRegisterInLineRequest request = new StationRegisterInLineRequest(1L, null, 1);
 
             // when, then
             RestAssured
                     .given()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .body(request)
-                    .when().patch("/lines/{id}/register", lineId)
+                    .when().patch("/lines/{id}/register/{direction}", lineId, direction)
                     .then()
                     .statusCode(HttpStatus.BAD_REQUEST.value());
         }
@@ -415,14 +430,15 @@ public class LineIntegrationTest extends IntegrationTest {
         void distance_is_negative() {
             // given
             final long lineId = 1L;
-            final StationRegisterInLineRequest request = new StationRegisterInLineRequest(SubwayDirection.UP, 1L, 4L, -1);
+            final SubwayDirection direction = SubwayDirection.UP;
+            final StationRegisterInLineRequest request = new StationRegisterInLineRequest(1L, 4L, -1);
 
             // when, then
             RestAssured
                     .given()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .body(request)
-                    .when().patch("/lines/{id}/register", lineId)
+                    .when().patch("/lines/{id}/register/{direction}", lineId, direction)
                     .then()
                     .statusCode(HttpStatus.BAD_REQUEST.value());
         }

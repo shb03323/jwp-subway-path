@@ -35,12 +35,12 @@ public class LineModifyService {
     }
 
     @Transactional
-    public LineResponse registerStation(final Long lineId, final StationRegisterInLineRequest request) {
+    public LineResponse registerStation(final Long lineId, final SubwayDirection direction, final StationRegisterInLineRequest request) {
         final long standardStationId = request.getStandardStationId();
         final long newStationId = request.getNewStationId();
         validateNewStation(lineId, newStationId);
         final int distance = request.getDistance();
-        if (request.getDirection() == SubwayDirection.UP) {
+        if (direction == SubwayDirection.UP) {
             final List<SectionDetailEntity> registeredUpperEntity = registerUpperStation(new SectionEntity(lineId, distance, standardStationId, newStationId));
             return convertToResponse(registeredUpperEntity);
         }

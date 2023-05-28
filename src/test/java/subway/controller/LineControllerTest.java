@@ -177,7 +177,7 @@ class LineControllerTest {
     }
 
     @Nested
-    @DisplayName("노선에 역 추가 - PATCH /lines/{id}/register")
+    @DisplayName("노선에 역 추가 - PATCH /lines/{id}/register/{direction}")
     class Register {
 
         @Test
@@ -185,14 +185,15 @@ class LineControllerTest {
         void success_upper_mid() throws Exception {
             // given
             final long lineId = 1L;
-            final StationRegisterInLineRequest requestDto = new StationRegisterInLineRequest(SubwayDirection.UP, 2L, 5L, 5);
+            final SubwayDirection direction = SubwayDirection.UP;
+            final StationRegisterInLineRequest requestDto = new StationRegisterInLineRequest(2L, 5L, 5);
             final String requestBody = objectMapper.writeValueAsString(requestDto);
             final LineResponse lineResponse = new LineResponse(lineId, "2호선", "bg-green-600",
                     List.of(new StationResponse(1L, "잠실"), new StationResponse(2L, "잠실새내"), new StationResponse(5L, "송파"))
             );
 
             // when
-            when(lineModifyService.registerStation(eq(lineId), any())).thenReturn(lineResponse);
+            when(lineModifyService.registerStation(eq(lineId), eq(direction), any())).thenReturn(lineResponse);
 
             // then
             final String responseBody =
@@ -202,7 +203,7 @@ class LineControllerTest {
                             "   {\"id\":2,\"name\":\"잠실새내\"}," +
                             "   {\"id\":5,\"name\":\"송파\"}" +
                             "]}";
-            mockMvc.perform(patch("/lines/{id}/register", lineId)
+            mockMvc.perform(patch("/lines/{id}/register/{direction}", lineId, direction)
                             .content(requestBody)
                             .contentType(MediaType.APPLICATION_JSON_VALUE))
                     .andExpect(status().isOk())
@@ -214,14 +215,15 @@ class LineControllerTest {
         void success_upper_end_point() throws Exception {
             // given
             final long lineId = 1L;
-            final StationRegisterInLineRequest requestDto = new StationRegisterInLineRequest(SubwayDirection.UP, 1L, 5L, 5);
+            final SubwayDirection direction = SubwayDirection.UP;
+            final StationRegisterInLineRequest requestDto = new StationRegisterInLineRequest(1L, 5L, 5);
             final String requestBody = objectMapper.writeValueAsString(requestDto);
             final LineResponse lineResponse = new LineResponse(lineId, "2호선", "bg-green-600",
                     List.of(new StationResponse(1L, "잠실"), new StationResponse(5L, "송파"), new StationResponse(2L, "잠실새내"))
             );
 
             // when
-            when(lineModifyService.registerStation(eq(lineId), any())).thenReturn(lineResponse);
+            when(lineModifyService.registerStation(eq(lineId), eq(direction), any())).thenReturn(lineResponse);
 
             // then
             final String responseBody =
@@ -231,7 +233,7 @@ class LineControllerTest {
                             "   {\"id\":5,\"name\":\"송파\"}," +
                             "   {\"id\":2,\"name\":\"잠실새내\"}" +
                             "]}";
-            mockMvc.perform(patch("/lines/{id}/register", lineId)
+            mockMvc.perform(patch("/lines/{id}/register/{direction}", lineId, direction)
                             .content(requestBody)
                             .contentType(MediaType.APPLICATION_JSON_VALUE))
                     .andExpect(status().isOk())
@@ -243,14 +245,15 @@ class LineControllerTest {
         void success_down_mid() throws Exception {
             // given
             final long lineId = 1L;
-            final StationRegisterInLineRequest requestDto = new StationRegisterInLineRequest(SubwayDirection.DOWN, 1L, 5L, 5);
+            final SubwayDirection direction = SubwayDirection.DOWN;
+            final StationRegisterInLineRequest requestDto = new StationRegisterInLineRequest(1L, 5L, 5);
             final String requestBody = objectMapper.writeValueAsString(requestDto);
             final LineResponse lineResponse = new LineResponse(lineId, "2호선", "bg-green-600",
                     List.of(new StationResponse(1L, "잠실새내"), new StationResponse(5L, "송파"), new StationResponse(2L, "잠실"))
             );
 
             // when
-            when(lineModifyService.registerStation(eq(lineId), any())).thenReturn(lineResponse);
+            when(lineModifyService.registerStation(eq(lineId), eq(direction), any())).thenReturn(lineResponse);
 
             // then
             final String responseBody =
@@ -260,7 +263,7 @@ class LineControllerTest {
                             "   {\"id\":5,\"name\":\"송파\"}," +
                             "   {\"id\":2,\"name\":\"잠실\"}" +
                             "]}";
-            mockMvc.perform(patch("/lines/{id}/register", lineId)
+            mockMvc.perform(patch("/lines/{id}/register/{direction}", lineId, direction)
                             .content(requestBody)
                             .contentType(MediaType.APPLICATION_JSON_VALUE))
                     .andExpect(status().isOk())
@@ -272,14 +275,15 @@ class LineControllerTest {
         void success_down_end_point() throws Exception {
             // given
             final long lineId = 1L;
-            final StationRegisterInLineRequest requestDto = new StationRegisterInLineRequest(SubwayDirection.DOWN, 1L, 5L, 5);
+            final SubwayDirection direction = SubwayDirection.DOWN;
+            final StationRegisterInLineRequest requestDto = new StationRegisterInLineRequest(1L, 5L, 5);
             final String requestBody = objectMapper.writeValueAsString(requestDto);
             final LineResponse lineResponse = new LineResponse(lineId, "2호선", "bg-green-600",
                     List.of(new StationResponse(5L, "송파"), new StationResponse(1L, "잠실새내"), new StationResponse(2L, "잠실"))
             );
 
             // when
-            when(lineModifyService.registerStation(eq(lineId), any())).thenReturn(lineResponse);
+            when(lineModifyService.registerStation(eq(lineId), eq(direction), any())).thenReturn(lineResponse);
 
             // then
             final String responseBody =
@@ -289,7 +293,7 @@ class LineControllerTest {
                             "   {\"id\":1,\"name\":\"잠실새내\"}," +
                             "   {\"id\":2,\"name\":\"잠실\"}" +
                             "]}";
-            mockMvc.perform(patch("/lines/{id}/register", lineId)
+            mockMvc.perform(patch("/lines/{id}/register/{direction}", lineId, direction)
                             .content(requestBody)
                             .contentType(MediaType.APPLICATION_JSON_VALUE))
                     .andExpect(status().isOk())
@@ -301,14 +305,15 @@ class LineControllerTest {
         void fail_duplicated_station_name() throws Exception {
             // given
             final long lineId = 1L;
-            final StationRegisterInLineRequest requestDto = new StationRegisterInLineRequest(SubwayDirection.DOWN, 2L, 1L, 5);
+            final SubwayDirection direction = SubwayDirection.DOWN;
+            final StationRegisterInLineRequest requestDto = new StationRegisterInLineRequest(2L, 1L, 5);
             final String requestBody = objectMapper.writeValueAsString(requestDto);
 
             // when
-            when(lineModifyService.registerStation(eq(lineId), any())).thenThrow(DuplicatedStationNameException.class);
+            when(lineModifyService.registerStation(eq(lineId), eq(direction), any())).thenThrow(DuplicatedStationNameException.class);
 
             // then
-            mockMvc.perform(patch("/lines/{id}/register", lineId)
+            mockMvc.perform(patch("/lines/{id}/register/{direction}", lineId, direction)
                             .content(requestBody)
                             .contentType(MediaType.APPLICATION_JSON_VALUE))
                     .andExpect(status().isBadRequest());
@@ -319,14 +324,15 @@ class LineControllerTest {
         void fail_duplicated_line() throws Exception {
             // given
             final long lineId = 2L;
-            final StationRegisterInLineRequest requestDto = new StationRegisterInLineRequest(SubwayDirection.DOWN, 2L, 1L, 5);
+            final SubwayDirection direction = SubwayDirection.DOWN;
+            final StationRegisterInLineRequest requestDto = new StationRegisterInLineRequest(2L, 1L, 5);
             final String requestBody = objectMapper.writeValueAsString(requestDto);
 
             // when
-            when(lineModifyService.registerStation(eq(lineId), any())).thenThrow(DuplicatedLineNameException.class);
+            when(lineModifyService.registerStation(eq(lineId), eq(direction), any())).thenThrow(DuplicatedLineNameException.class);
 
             // then
-            mockMvc.perform(patch("/lines/{id}/register", lineId)
+            mockMvc.perform(patch("/lines/{id}/register/{direction}", lineId, direction)
                             .content(requestBody)
                             .contentType(MediaType.APPLICATION_JSON_VALUE))
                     .andExpect(status().isBadRequest());

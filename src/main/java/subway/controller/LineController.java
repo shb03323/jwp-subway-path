@@ -11,13 +11,13 @@ import org.springframework.web.bind.annotation.RestController;
 import subway.controller.dto.request.LineRequest;
 import subway.controller.dto.request.StationRegisterInLineRequest;
 import subway.controller.dto.request.StationUnregisterInLineRequest;
+import subway.controller.dto.request.SubwayDirection;
 import subway.controller.dto.response.LineResponse;
 import subway.service.LineModifyService;
 import subway.service.LineService;
 import subway.service.dto.LineDto;
 import subway.service.dto.SectionCreateDto;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
@@ -54,10 +54,11 @@ public class LineController {
         return ResponseEntity.ok(lineService.findById(id));
     }
 
-    @PatchMapping("/{id}/register")
+    @PatchMapping("/{id}/register/{direction}")
     public ResponseEntity<LineResponse> registerStation(
-            @PathVariable final Long id, @RequestBody @Valid final StationRegisterInLineRequest request) {
-        return ResponseEntity.ok(lineModifyService.registerStation(id, request));
+            @PathVariable(name = "id") final Long id, @PathVariable(name = "direction") final SubwayDirection direction,
+            @RequestBody @Valid final StationRegisterInLineRequest request) {
+        return ResponseEntity.ok(lineModifyService.registerStation(id, direction, request));
     }
 
     @PatchMapping("/{id}/unregister")

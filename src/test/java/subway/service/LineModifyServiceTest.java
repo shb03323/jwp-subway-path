@@ -43,7 +43,8 @@ class LineModifyServiceTest {
     void registerStation_success_upper_end() {
         // given
         final long lineId = 1L;
-        final StationRegisterInLineRequest request = new StationRegisterInLineRequest(SubwayDirection.UP, 1L, 4L, 1);
+        final SubwayDirection direction = SubwayDirection.UP;
+        final StationRegisterInLineRequest request = new StationRegisterInLineRequest(1L, 4L, 1);
         final List<SectionDetailEntity> sectionDetailEntities = List.of(
                 new SectionDetailEntity(1L, 1, lineId, "2호선", "bg-green-600", 4L, "석촌", 1L, "잠실"),
                 new SectionDetailEntity(1L, 1, lineId, "2호선", "bg-green-600", 1L, "잠실", 2L, "잠실새내"),
@@ -55,7 +56,7 @@ class LineModifyServiceTest {
         given(sectionDao.findSectionDetailByLineId(lineId)).willReturn(sectionDetailEntities);
 
         // when
-        final LineResponse response = lineModifyService.registerStation(lineId, request);
+        final LineResponse response = lineModifyService.registerStation(lineId, direction, request);
 
         // then
         assertAll(
@@ -74,7 +75,8 @@ class LineModifyServiceTest {
     void registerStation_success_down_end() {
         // given
         final long lineId = 1L;
-        final StationRegisterInLineRequest request = new StationRegisterInLineRequest(SubwayDirection.DOWN, 3L, 4L, 1);
+        final SubwayDirection direction = SubwayDirection.DOWN;
+        final StationRegisterInLineRequest request = new StationRegisterInLineRequest(3L, 4L, 1);
         final List<SectionDetailEntity> sectionDetailEntities = List.of(
                 new SectionDetailEntity(1L, 1, lineId, "2호선", "bg-green-600", 1L, "잠실", 2L, "잠실새내"),
                 new SectionDetailEntity(1L, 1, lineId, "2호선", "bg-green-600", 2L, "잠실새내", 3L, "종합운동장"),
@@ -86,7 +88,7 @@ class LineModifyServiceTest {
         given(sectionDao.findSectionDetailByLineId(lineId)).willReturn(sectionDetailEntities);
 
         // when
-        final LineResponse response = lineModifyService.registerStation(lineId, request);
+        final LineResponse response = lineModifyService.registerStation(lineId, direction, request);
 
         // then
         assertAll(
@@ -105,7 +107,8 @@ class LineModifyServiceTest {
     void registerStation_success_upper_mid() {
         // given
         final long lineId = 1L;
-        final StationRegisterInLineRequest request = new StationRegisterInLineRequest(SubwayDirection.UP, 1L, 4L, 1);
+        final SubwayDirection direction = SubwayDirection.UP;
+        final StationRegisterInLineRequest request = new StationRegisterInLineRequest(1L, 4L, 1);
         final List<SectionDetailEntity> sectionDetailEntities = List.of(
                 new SectionDetailEntity(1L, 1, lineId, "2호선", "bg-green-600", 1L, "잠실", 4L, "석촌"),
                 new SectionDetailEntity(1L, 1, lineId, "2호선", "bg-green-600", 4L, "석촌", 2L, "잠실새내"),
@@ -118,7 +121,7 @@ class LineModifyServiceTest {
         given(sectionDao.findSectionDetailByLineId(lineId)).willReturn(sectionDetailEntities);
 
         // when
-        final LineResponse response = lineModifyService.registerStation(lineId, request);
+        final LineResponse response = lineModifyService.registerStation(lineId, direction, request);
 
         // then
         assertAll(
@@ -137,7 +140,8 @@ class LineModifyServiceTest {
     void registerStation_success_down_mid() {
         // given
         final long lineId = 1L;
-        final StationRegisterInLineRequest request = new StationRegisterInLineRequest(SubwayDirection.DOWN, 1L, 4L, 1);
+        final SubwayDirection direction = SubwayDirection.DOWN;
+        final StationRegisterInLineRequest request = new StationRegisterInLineRequest(1L, 4L, 1);
         final List<SectionDetailEntity> sectionDetailEntities = List.of(
                 new SectionDetailEntity(1L, 1, lineId, "2호선", "bg-green-600", 1L, "잠실", 4L, "석촌"),
                 new SectionDetailEntity(1L, 1, lineId, "2호선", "bg-green-600", 4L, "석촌", 2L, "잠실새내"),
@@ -150,7 +154,7 @@ class LineModifyServiceTest {
         given(sectionDao.findSectionDetailByLineId(lineId)).willReturn(sectionDetailEntities);
 
         // when
-        final LineResponse response = lineModifyService.registerStation(lineId, request);
+        final LineResponse response = lineModifyService.registerStation(lineId, direction, request);
 
         // then
         assertAll(
